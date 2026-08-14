@@ -5,17 +5,17 @@ from sqlalchemy import create_engine
 from curl_cffi import requests
 
 # 1. Configuration Constants
-API_URL = "https://premierleague.com"
+API_URL = "https://fantasy.premierleague.com/api/bootstrap-static/"
 DEFAULT_CSV = "fpl_players_data.csv"
 TABLE_NAME = "players"
 
-# 2. Update these fields with your MySQL Server details
+# Update these fields with your MySQL Server details
 MYSQL_CONFIG = {
-    "user": "root",          # Your MySQL Username
-    "password": "password",  # Your MySQL Password
+    "user": "Kumar",          # Your MySQL Username
+    "password": "StrongPassword123!",  # Your MySQL Password
     "host": "localhost",     # Host (e.g., localhost or an IP address)
     "port": "3306",          # Default MySQL Port
-    "database": "fpl_db"     # The database name you want to use
+    "database": "FPL"     # The database name you want to use
 }
 
 def clear_screen():
@@ -30,18 +30,35 @@ def print_header(title):
 
 def main():
     clear_screen()
-    print_header("FPL DATA EXTRACTOR (IMPERSONATION VERSION)")
+    print_header("FPL DATA EXTRACTOR (STEALTH VERSION)")
     
     # ----------------------------------------------------
-    # STEP 1: Fetching the Data with Browser Impersonation
+    # STEP 1: Fetching the Data with Browser Session Simulation
     # ----------------------------------------------------
     print("\n[STEP 1/3] Fetch Live FPL API Data")
-    input("👉 Press ENTER to impersonate a browser and fetch data...")
+    input("👉 Press ENTER to run a stealth connection and fetch data...")
     
-    print("\n🔄 Connecting to FPL API via curl_cffi (Chrome 120 Impersonation)...")
+    print("\n🔄 Connecting to FPL API via curl_cffi Session Engine...")
     
-    # curl_cffi clones the exact TLS signature and network fingerprint of a clean desktop browser
-    response = requests.get(API_URL, impersonate="chrome120")
+    # Initializing a persistent session object so cookies are accepted natively
+    with requests.Session() as session:
+        
+        # Setting custom headers to pass the Premier League validation filters
+        headers = {
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Origin": "https://fantasy.premierleague.com",
+            "Referer": "https://fantasy.premierleague.com/",
+            "Sec-Ch-Ua": '"Not A(Break;Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+            "Sec-Ch-Ua-Mobile": "?0",
+            "Sec-Ch-Ua-Platform": '"Windows"',
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site",
+        }
+        
+        # Executing the query with Chrome 120 signature emulation and custom headers
+        response = session.get(API_URL, headers=headers, impersonate="chrome120")
     
     # HTTP Status Check
     if response.status_code != 200:
@@ -54,8 +71,9 @@ def main():
     raw_text = response.text.strip()
     if raw_text.startswith("<") or "html" in raw_text.lower():
         print("\n❌ Blocking Error: The server still served an HTML webpage.")
+        print("The script was redirected back to the desktop home page.")
         print("\n--- BEGIN HTML TEMPLATE ---")
-        print(raw_text[:600])
+        print(raw_text[:400])
         print("--- END HTML TEMPLATE ---")
         sys.exit(1)
         
@@ -137,7 +155,7 @@ def main():
     print("\nAll tasks finished successfully!\n")
 
 def save_to_mysql(df):
-    """Handles connection and transfer to MySQL."""
+    """Handles connection and transfer to MySQL without error suppression."""
     connection_url = f"mysql+mysqlconnector://{MYSQL_CONFIG['user']}:{MYSQL_CONFIG['password']}@{MYSQL_CONFIG['host']}:{MYSQL_CONFIG['port']}/{MYSQL_CONFIG['database']}"
     print(f"\n🔄 Connecting to MySQL server at {MYSQL_CONFIG['host']}...")
     
