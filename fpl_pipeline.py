@@ -19,11 +19,11 @@ TABLE_NAME = "players_master"
 OUTPUT_MARKDOWN_PATH = "FPL_Performance_Report.md"  # Change to absolute path if linking to Obsidian
 
 MYSQL_CONFIG = {
-    "user": "root",
-    "password": "password",  # Update to your actual root password
-    "host": "localhost",
-    "port": "3306",
-    "database": "fpl_db"     
+    "user" = os.getenv("DB_USER")            #                                                  >│
+    "password" = os.getenv("DB_PASSWORD")    #                                                  >│
+    "host" = os.getenv("DB_HOST")            #                                                  >│
+    "port" = os.getenv("DB_PORT")            #                                                  >│
+    "database" = os.getenv("DB_DATABASE")    #   
 }
 
 def main():

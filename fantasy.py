@@ -20,11 +20,11 @@ TABLE_NAME = "players_master"
 
 # Update these fields with your exact MySQL configurations
 MYSQL_CONFIG = {
-    "user": "Kumar",
-    "password": "StrongPassword123!",  # Update to your actual root password
-    "host": "localhost",
-    "port": "3306",
-    "database": "FPL"     
+    "user" = os.getenv("DB_USER")               #                                               >│
+    "password" = os.getenv("DB_PASSWORD")       #                                               >│
+    "host" = os.getenv("DB_HOST")               #                                               >│
+    "port" = os.getenv("DB_PORT")               #                                               >│
+    "database" = os.getenv("DB_DATABASE")       #      
 }
 
 def main():
